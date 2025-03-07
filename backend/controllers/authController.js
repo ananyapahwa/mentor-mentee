@@ -4,30 +4,46 @@ const crypto = require('crypto');
 const emailService = require('../services/emailOTP');
 
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password, role } = req.body;
+
+  if (!name || !email || !password || !role) {
+    return res.status(400).json({ message: 'Name, email, password, and role are required.' });
+  }
+
+  if (!['mentor', 'mentee'].includes(role)) {
+    return res.status(400).json({ message: 'Invalid role. Must be either "mentor" or "mentee".' });
+  }
+
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists with this email.' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     const user = await User.create({
+      name,
       email,
       password: hashedPassword,
+      role,
       otp,
       otpExpiry,
     });
 
     await emailService.sendOTP(email, otp);
 
-    res.status(201).json({ message: 'Registered successfully. Please verify OTP sent to your email.' });
+    res.status(201).json({
+      message: 'Registered successfully. Please verify the OTP sent to your email.',
+      userId: user._id, // Optional: return user ID for frontend use
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Registration Error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again later.' });
   }
 };
-
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
   try {
