@@ -1,6 +1,6 @@
 # Mentor-Mentee Appointment Booking Application
 
-###Under Development
+(Under Development)
 
 ## 📌 Project Overview
 This is a web-based application designed for organizations and universities to facilitate seamless mentor-mentee interactions. The platform allows mentees to book appointments with mentors, manage schedules, and enhance professional growth.
@@ -33,13 +33,12 @@ Ensure you have the following installed:
 1. Clone the repository:
    ```sh
    git clone https://github.com/your-repo/mentor-mentee-app.git
-   cd mentor-mentee-app
    ```
 2. Install dependencies:
    ```sh
-   cd client
+   cd frontned
    npm install
-   cd ../server
+   cd backend
    npm install
    ```
 3. Create a `.env` file in the server directory:
