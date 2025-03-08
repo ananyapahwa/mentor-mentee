@@ -24,7 +24,11 @@ const Register = () => {
         password,
         role,
       });
+      localStorage.setItem("email", email);
+      
       alert('Registration Successful!');
+      navigate('/otp-verification', { state: { email } });
+  
     } catch (err) {
       alert('Registration Failed!');
     }
