@@ -1,0 +1,87 @@
+.otp-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, #d8d9ff, #9c80ff);
+}
+
+.otp-form {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.otp-form h2 {
+    color: #5e00b5;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+/* OTP input container */
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between input boxes */
+    margin-bottom: 20px;
+}
+
+/* Individual OTP input boxes */
+.otp-inputs input {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+    text-align: center;
+    border: 2px solid #5e00b5;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.otp-inputs input:focus {
+    border-color: #3e008a;
+    box-shadow: 0px 0px 8px rgba(94, 0, 181, 0.5);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #5e00b5;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #3e008a;
+}
+
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
+
+.resend {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.resend a {
+    color: #5e00b5;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.resend a:hover {
+    text-decoration: underline;
+}

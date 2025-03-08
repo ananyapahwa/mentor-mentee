@@ -21,19 +21,21 @@ exports.register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const OTP = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit OTP
+    const hashedOTP = await bcrypt.hash(OTP, 10); // Hash the OTP
+    const otpExpiry = Date.now() + 10 * 60 * 1000; // OTP valid for 10 mins
 
     const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      otp,
-      otpExpiry,
+        name,
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        role,
+        OTP: hashedOTP,  // Store hashed OTP
+        otpExpiry,
+        isVerified: false,
     });
 
-    await emailService.sendOTP(email, otp);
+    await emailService.sendOTP(email, OTP);
 
     res.status(201).json({
       message: 'Registered successfully. Please verify the OTP sent to your email.',
@@ -46,13 +48,21 @@ exports.register = async (req, res) => {
 };
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' });
+  }
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     if (user.isVerified) return res.status(400).json({ message: 'User already verified' });
-    if (user.otp !== otp || user.otpExpiry < Date.now()) {
-      return res.status(400).json({ message: 'Invalid or expired OTP' });
+
+    if (user.otpExpiry < Date.now()) {
+      return res.status(400).json({ message: 'OTP expired. Please request a new one.' });
+    }
+    const isMatch = await bcrypt.compare(otp, user.OTP);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid OTP' });
     }
 
     user.isVerified = true;
