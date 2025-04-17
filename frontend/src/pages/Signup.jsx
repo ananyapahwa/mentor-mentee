@@ -28,12 +28,17 @@ const Register = () => {
       
       alert('Registration Successful!');
       navigate('/otp-verification', { state: { email } });
-  
     } catch (err) {
-      alert('Registration Failed!');
+      // Check if the error response exists
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message); // Set specific error message from server
+      } else {
+        setError('An unexpected error occurred. Please try again.'); // Set generic error message
+      }
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
-  
 
   return (
       <form className="register-form" onSubmit={handleRegister}>
@@ -85,7 +90,7 @@ const Register = () => {
         </button>
 
         <p className="login-link">
-          Already have an account? <a href="/login">Login here</a>
+          Already have an account? <a href="/">Login here</a>
         </p>
       </form>
 
